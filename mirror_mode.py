@@ -1,4 +1,5 @@
 from pumpkinpipe.hand import HandDetector
+from pumpkinpipe.utils.drawing import overlay_image, HAlign, VAlign
 import cv2
 import xarm
 from time import monotonic, sleep
@@ -21,6 +22,8 @@ def map_range(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 UPDATE = 0.15
 arm = xarm.Controller('USB')
+WINDOW_NAME = "xArm Demo - Mirror Mode"
+cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
 cap = cv2.VideoCapture(0)
 WIDTH = 1280
 HEIGHT = 720
@@ -84,10 +87,11 @@ while True:
                 else:
                     arm.setPosition(i, 1000 - current_upness)
         start_time = monotonic()
-    cv2.imshow("Debug Example", frame)
+    overlay_image(frame, "stem_collegiate_logo.jpg", (0, HEIGHT), h_align=HAlign.LEFT, v_align=VAlign.BOTTOM, scale=0.15)
+    cv2.imshow(WINDOW_NAME, frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-    if cv2.getWindowProperty("Debug Example", cv2.WND_PROP_VISIBLE) < 1:
+    if cv2.getWindowProperty(WINDOW_NAME, cv2.WND_PROP_VISIBLE) < 1:
         break
 cap.release()
 cv2.destroyAllWindows()
